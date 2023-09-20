@@ -1,29 +1,75 @@
+const { User } = require('../models')
 module.exports = {
-
-    // Show user by id
-    show(req, res) {
-        res.send('ดูข้อมูลผู้ใช้งาน ' + req.params.userId + ' : ' + JSON.stringify(req.body));
+    // get all user
+    async index(req, res) {
+        try {
+            const users = await User.findAll()
+            res.send(users)
+        } catch (err) {
+            res.status(500).send({
+                error: 'The users informention was incorrect'
+            })
+        }
     },
-    
-    // Get all users
-    index(req, res) {
-        res.send('ดูข้อมูลผู้ใช้งาน');
+    // create user
+    async create(req, res) {
+        try {
+            const users = await User.create(req.body)
+            res.send(user.toJSON())
+        } catch (err) {
+            res.status(500).send({
+                error: 'Create user incorrect'
+            })
+        }
     },
 
-    // Create user
-    create(req, res) {
-        res.send('ทำการสร้างผู้ใช้งาน' + JSON.stringify(req.body));
+    // edit user, suspend, active
+    async put(req, res) {
+        try {
+            await User.update(req.body, {
+                where: {
+                    id: req.params.userId
+                }
+            })
+            res.send(req.body)
+        } catch (err) {
+            res.status(500).send({
+                error: 'Update user incorrect'
+            })
+        }
     },
+    // delete user
+    async remove(req, res) {
+        try {
+            const user = await User.find0ne({
+                where: {
+                    id: req.params.userId
+                }
+            })
+            if (!user) {
+                return res.status(403).send({
+                    error: 'The user information was incorrect'
+                })
+            }
 
-    // Edit user
-    put(req, res) {
-        res.send('แก้ไขข้อมูลผู้ใช้ ' + req.params.userId + ' : ' + JSON.stringify(req.body.name));
+            await user.destroy()
+            res.send(req.body)
+        } catch (err) {
+            res.status(500).send({
+                error: 'The user information was incorrect'
+            })
+        }
     },
-
-    // Delete user
-    delete(req, res) {
-        res.send('ทำการลบผู้ใช้งาน:' + req.params.userId + ' : ' + JSON.stringify(req.body));
-    }
-
-};
+    // get user by id
+    async show(req, res) {
+        try {
+            const user = await User.findByPk(req.params.userId)
+            res.send(user)
+        } catch (err) {
+            res.status(500).send({
+                error: 'The user information was incorrect'
+            })
+        }
+    },
+}
 
