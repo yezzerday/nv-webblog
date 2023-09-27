@@ -13,7 +13,7 @@ module.exports = (app) =>{
     app.put('/user/:userId' , UserController.put)
 
     //delete
-    app.delete('/user/:userId', UserController.delete)
+    app.delete('/user/:userId', UserController.remove)
 
     //show by id
     app.get('/user/:userId', UserController.show)
